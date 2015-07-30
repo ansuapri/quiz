@@ -32,10 +32,10 @@ var Quiz = sequelize.import(quiz_path);
 
 exports.Quiz = Quiz; // exportar de tabla Quiz
 
-+// sequelize.sync() inicializa tabla de preguntas en DB
-+sequelize.sync().then(function() {
-+  // then(..) ejecuta el manejador una vez creada la tabla
-+  Quiz.count().then(function (count){
+// sequelize.sync() inicializa tabla de preguntas en DB
+sequelize.sync().then(function() {
+  // then(..) ejecuta el manejador una vez creada la tabla
+  Quiz.count().then(function (count){
       if(count === 0) {   // la tabla se inicializa solo si est� vac�a
         Quiz.bulkCreate(
           [ {pregunta: 'Capital de Italia',   respuesta: 'Roma'},
