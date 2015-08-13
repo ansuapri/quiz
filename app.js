@@ -30,6 +30,24 @@ app.use(session());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//autoload Control de tiempo de la sesion
+app.use(function(req,res,next){
+	if(req.session.user){ //si el usuario esta logeado
+		if(req.session.tiempo){ //si tiene tiempo de inicio asignado
+			var inactividad = new Date().getTime()-req.session.tiempo;
+			if(inactividad>60*2*1000){ //si el tiempo de inactividad excede 2 mins
+				delete req.session.user;  //borra la sesion de usuario
+				delete req.session.tiempo; //borra variable tiempo
+				res.redirect('/login'); //solicita nuevo login
+				}else{req.session.tiempo=(new Date().getTime())}; //reinicia tiempo asignado}
+			}else{ //no tiene tiempo asignado
+				req.session.tiempo=(new Date()).getTime(); //asigna tiempo de inicio
+		}
+	}
+	next();
+});
+
+
 // Helpers dinamicos:
 app.use(function(req, res, next) {
 
@@ -44,7 +62,6 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
-//app.use('/', author);
 
 
 // catch 404 and forward to error handler
